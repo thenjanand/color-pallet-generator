@@ -1,47 +1,66 @@
 const generateBtn = document.getElementById("generateBtn");
 
 const singleHexColorGenerator = () => {
-  const hex = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, "A", "B", "C", "D", "F"];
+  const hex = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, "A", "B", "C", "D", "E", "F"];
 
   let hexColor = "#";
 
   for (let i = 0; i < 6; i++) {
     let random = Math.floor(Math.random() * hex.length);
     hexColor += hex[random];
-    // console.log(hexColor);
   }
+
   return hexColor;
 };
 
-const colorPalletGenerator = () => {
-  const colorPallet = [];
+const colorPaletteGenerator = () => {
+  const colorPalette = [];
   for (let i = 0; i < 4; i++) {
-    colorPallet.push(singleHexColorGenerator());
+    colorPalette.push(singleHexColorGenerator());
   }
-  return colorPallet;
+  return colorPalette;
 };
 
-const renderColorPallet = () => {
+const renderColorPalette = () => {
   const colorsContainer = document.querySelector(".colors_container");
 
   colorsContainer.innerHTML = "";
 
-  const colorPallet = colorPalletGenerator();
-  colorPallet.forEach((color, i) => {
-    const colordiv = document.createElement("div");
-    colordiv.id = `color${i + 1}`;
-    colordiv.style.background = color;
-    colordiv.className = "colorBox";
+  const colorPalette = colorPaletteGenerator();
+
+  colorPalette.forEach((color, i) => {
+    const colorDiv = document.createElement("div");
+    colorDiv.id = `color${i + 1}`;
+    colorDiv.style.background = color;
+    colorDiv.className = "colorBox";
 
     const colorTag = document.createElement("p");
     colorTag.id = `color${i + 1}Tag`;
     colorTag.className = "colorTag";
     colorTag.innerHTML = color;
-    colordiv.appendChild(colorTag);
-
-    colorsContainer.appendChild(colordiv);
+    colorDiv.appendChild(colorTag);
+    colorsContainer.appendChild(colorDiv);
   });
-  
-  const colorTags=document.querySelectorAll(".colorTag");
+
+  const copytoClipBoard = (id) => {
+    const el = document.getElementById(id);
+
+    navigator.clipboard
+      .writeText(el.innerText)
+      .then(() => {
+        alert("Copied to clipboard");
+      })
+      .catch((err) => {
+        alert("Could not copy");
+      });
+  };
+
+  const colorTags = document.querySelectorAll(".colorTag");
+  colorTags.forEach((colorTag, i) => {
+    colorTag.addEventListener("click", () =>
+      copytoClipBoard(`color${i + 1}Tag`)
+    );
+  });
 };
-generateBtn.addEventListener("click", renderColorPallet);
+renderColorPalette();
+generateBtn.addEventListener("click", renderColorPalette);
